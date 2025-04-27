@@ -21,14 +21,12 @@ export default function StudentTable({ students, searchTerm }) {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('id');
 
-  // handle sorting when header clicked
   const handleSort = (property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-  // apply search filter + sort
   const filtered = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     const filteredList = students.filter(s =>
@@ -47,8 +45,18 @@ export default function StudentTable({ students, searchTerm }) {
   }
 
   return (
-    <TableContainer component={Paper} sx={{ mt: 2 }}>
-      <Table>
+    <TableContainer
+      component={Paper}
+      sx={{
+        mt: 2,
+        overflowX: 'auto'       
+      }}
+    >
+      <Table
+        sx={{
+          minWidth: 600          
+        }}
+      >
         <TableHead>
           <TableRow>
             {[
@@ -89,8 +97,10 @@ export default function StudentTable({ students, searchTerm }) {
 
 StudentTable.propTypes = {
   students: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string, name: PropTypes.string,
-    course: PropTypes.string, grade: PropTypes.string,
+    id: PropTypes.string,
+    name: PropTypes.string,
+    course: PropTypes.string,
+    grade: PropTypes.string,
     enrollmentDate: PropTypes.string,
   })).isRequired,
   searchTerm: PropTypes.string.isRequired,
