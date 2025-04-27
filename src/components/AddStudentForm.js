@@ -12,7 +12,7 @@ const initialForm = {
   enrollmentDate: '',
 };
 
-export default function AddStudentForm({ onAdd }) {
+export default function AddStudentForm({ onAdd, existingIds }) {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState('');
   
@@ -23,11 +23,28 @@ export default function AddStudentForm({ onAdd }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     for (let key of Object.keys(form)) {
       if (!form[key].trim()) {
         setError(`Please fill in the ${key} field.`);
         return;
       }
+    }
+    
+    if (/\d/.test(form.name)) {
+      setError("Name cannot contain numbers");
+      return;
+    }
+    
+    const validGradePattern = /^[A-F][+-]?$/;
+    if (!validGradePattern.test(form.grade)) {
+      setError("Grade must be a letter grade (A-F, with optional + or -)");
+      return;
+    }
+    
+    if (existingIds.includes(form.id)) {
+      setError("Student ID must be unique. This ID already exists.");
+      return;
     }
     
     onAdd(form);
@@ -44,6 +61,7 @@ export default function AddStudentForm({ onAdd }) {
           value={form.id}
           onChange={handleChange}
           required
+          helperText="Unique identifier for the student (must not be a duplicate)"
         />
         <TextField
           label="Name"
@@ -51,6 +69,7 @@ export default function AddStudentForm({ onAdd }) {
           value={form.name}
           onChange={handleChange}
           required
+          helperText="Student name (no numbers allowed)"
         />
         <TextField
           label="Course"
@@ -65,6 +84,7 @@ export default function AddStudentForm({ onAdd }) {
           value={form.grade}
           onChange={handleChange}
           required
+          helperText="Letter grade only (A-F, with optional + or -)"
         />
         <TextField
           label="Enrollment Date"
@@ -85,4 +105,5 @@ export default function AddStudentForm({ onAdd }) {
 
 AddStudentForm.propTypes = {
   onAdd: PropTypes.func.isRequired,
+  existingIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

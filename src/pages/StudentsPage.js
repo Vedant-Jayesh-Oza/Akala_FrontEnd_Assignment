@@ -17,6 +17,8 @@ export default function StudentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  const existingIds = students.map(student => student.id);
+
   useEffect(() => {
     saveToLocalStorage('students', students);
   }, [students]);
@@ -59,7 +61,7 @@ export default function StudentsPage() {
           {successMessage}
         </Box>
       )}
-      <AddStudentForm onAdd={handleAdd} />
+      <AddStudentForm onAdd={handleAdd} existingIds={existingIds} />
     </Box>
   );
 }
