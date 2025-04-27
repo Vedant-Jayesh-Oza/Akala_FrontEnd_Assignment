@@ -15,25 +15,22 @@ const initialForm = {
 export default function AddStudentForm({ onAdd }) {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
+  
   const handleChange = (e) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
     setError('');
-    setSuccess('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // simple validation
     for (let key of Object.keys(form)) {
       if (!form[key].trim()) {
         setError(`Please fill in the ${key} field.`);
         return;
       }
     }
+    
     onAdd(form);
-    setSuccess('Student added successfully!');
     setForm(initialForm);
   };
 
@@ -41,8 +38,6 @@ export default function AddStudentForm({ onAdd }) {
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Stack spacing={2}>
         {error && <Alert severity="error">{error}</Alert>}
-        {success && <Alert severity="success">{success}</Alert>}
-
         <TextField
           label="Student ID"
           name="id"
@@ -80,7 +75,6 @@ export default function AddStudentForm({ onAdd }) {
           onChange={handleChange}
           required
         />
-
         <Button variant="contained" type="submit">
           Add Student
         </Button>
